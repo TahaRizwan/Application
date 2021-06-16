@@ -182,6 +182,7 @@ public class OTPActivity extends AppCompatActivity {
                         hashMap.put("name","");//will add later
                         hashMap.put("phone",phone);//will add later
                         hashMap.put("image","");//will add later
+                        hashMap.put("cover","");//will add later
 
                         //firebase database instance
 
