@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Labour Management</string>
+    <string name="already_have_an_account_signup">Do not have an account? <b>SignUp</b></string>
+    <string name="your_credentials_nenter_the_missing_fields">Your Credentials  <b>Enter The Missing Fields</b></string>
+    <string name="didn_t_get_otp_resend">Did not get OTP? <b>Resend</b></string>
+    <string name="want_to_sign_up_with_phone_no">Want to Sign Up with <b>Phone No</b></string>
+    <string name="forgot_password_recover">Forgot Password? <b>Recover</b></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

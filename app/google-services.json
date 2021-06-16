@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "742357599851",
+    "project_id": "my-application-a78e2",
+    "storage_bucket": "my-application-a78e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742357599851:android:285aa9c9121b56bdb9d32e",
+        "android_client_info": {
+          "package_name": "com.edu.gcu.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742357599851-k47mbulufnvl7qjq3r1hucgq07h1fsah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6wgfFlsO0ZVGJew_1NqjanBayJVvaq1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742357599851-k47mbulufnvl7qjq3r1hucgq07h1fsah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
