@@ -228,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
                         String email = firebaseUser.getEmail();
                         Toast.makeText(LoginActivity.this,"Logged In"+email,Toast.LENGTH_SHORT).show();
 
-                        startActivity(new Intent(LoginActivity.this,OTPActivity.class));
+                        startActivity(new Intent(LoginActivity.this,MainActivity.class));
                         finish();
 
                     }
@@ -279,6 +279,8 @@ public class LoginActivity extends AppCompatActivity {
                                 hashMap.put("email",email);
                                 hashMap.put("uid",uid);
                                 hashMap.put("name","");//will add later
+                                hashMap.put("onlineStatus","online");
+                                hashMap.put("typingTo","noOne");
                                 hashMap.put("phone","");//will add later
                                 hashMap.put("image","");//will add later
                                 hashMap.put("cover","");//will add later

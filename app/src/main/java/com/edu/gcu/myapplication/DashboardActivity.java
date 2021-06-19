@@ -5,16 +5,24 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.edu.gcu.myapplication.Fragments.ChatListFragment;
 import com.edu.gcu.myapplication.Fragments.JobFragment;
 import com.edu.gcu.myapplication.Fragments.ProfileFragment;
 import com.edu.gcu.myapplication.Fragments.UserFragment;
 import com.edu.gcu.myapplication.databinding.ActivityDashboardBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -23,6 +31,7 @@ public class DashboardActivity extends AppCompatActivity {
     ActionBar actionBar;
 
     FirebaseAuth firebaseAuth;
+
 
 
 
@@ -84,9 +93,42 @@ public class DashboardActivity extends AppCompatActivity {
                       ft3.commit();
                       return true;
 
+                  case R.id.nav_chat:
+                      //users fragment transaction
+                      actionBar.setTitle("Chats");
+                      ChatListFragment chatListFragment = new ChatListFragment();
+                      FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
+                      ft4.replace(R.id.content,chatListFragment,"");
+                      ft4.commit();
+                      return true;
+
 
               }
                     return false;
                 }
             };
+    private void checkUserStatus(){
+
+        FirebaseUser firebaseUser =firebaseAuth.getCurrentUser();
+
+        if(firebaseUser != null){
+
+        }
+        else{
+            startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
+            finish();
+        }
+    }
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        finish();
+    }
+    @Override
+    protected  void onStart(){
+        checkUserStatus();
+        super.onStart();
+    }
+
+
 }

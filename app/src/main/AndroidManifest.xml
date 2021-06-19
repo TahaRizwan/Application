@@ -3,8 +3,8 @@
     package="com.edu.gcu.myapplication">
     <!-- Internet Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DashboardActivity"></activity>
+        <activity android:name=".ChatActivity"
+            android:theme="@style/AppThemeNo"></activity>
+        <activity android:name=".DashboardActivity" />
         <activity android:name=".OTPActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">

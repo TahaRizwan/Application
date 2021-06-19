@@ -18,6 +18,9 @@ import androidx.fragment.app.Fragment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -26,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.edu.gcu.myapplication.LoginActivity;
 import com.edu.gcu.myapplication.R;
 import com.edu.gcu.myapplication.databinding.FragmentProfileBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -471,5 +475,43 @@ public class ProfileFragment extends Fragment {
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent,IMAGE_PICK_GALLERY_CODE);
 
+    }@Override
+    public void onCreate(@Nullable Bundle savedInstanceState){
+        setHasOptionsMenu(true);//to show menu option in fragment
+        super.onCreate(savedInstanceState);
     }
+    private void checkUserStatus(){
+
+        FirebaseUser firebaseUser =firebaseAuth.getCurrentUser();
+
+        if(firebaseUser != null){
+
+        }
+        else{
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+            getActivity().finish();
+        }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+
+        inflater.inflate(R.menu.menu_main,menu);
+        super.onCreateOptionsMenu(menu,inflater);
+
+    }
+    @Override
+    public  boolean onOptionsItemSelected(MenuItem item){
+
+        int id = item.getItemId();
+
+        if(id==R.id.action_logout){
+            firebaseAuth.signOut();
+            checkUserStatus();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
