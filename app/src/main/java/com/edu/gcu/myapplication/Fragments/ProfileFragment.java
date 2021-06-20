@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.edu.gcu.myapplication.AddPostActivity;
 import com.edu.gcu.myapplication.LoginActivity;
 import com.edu.gcu.myapplication.R;
 import com.edu.gcu.myapplication.databinding.FragmentProfileBinding;
@@ -366,8 +367,8 @@ public class ProfileFragment extends Fragment {
             case STORAGE_REQUEST_CODE:{
 
                 if(grantResults.length>0){
-                    boolean writeStorageAccepted = grantResults[1]==PackageManager.PERMISSION_GRANTED;
-                    if(writeStorageAccepted==true){
+                    boolean writeStorageAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+                    if(writeStorageAccepted){
                         pickFromGallery();
                     }
                     else {
@@ -509,6 +510,9 @@ public class ProfileFragment extends Fragment {
         if(id==R.id.action_logout){
             firebaseAuth.signOut();
             checkUserStatus();
+        }
+        if(id==R.id.action_add_post){
+            startActivity(new Intent(getActivity(), AddPostActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
