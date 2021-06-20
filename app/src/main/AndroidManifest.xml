@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AddPostActivity"></activity>
+        <activity android:name=".ThereProfileActivity"></activity>
+        <activity android:name=".AddPostActivity" />
         <activity
             android:name=".ChatActivity"
             android:theme="@style/AppThemeNo" />

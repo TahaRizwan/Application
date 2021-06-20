@@ -292,12 +292,7 @@ public class AddPostActivity extends AppCompatActivity {
     }
 
     private void pickFromCamera() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
-    }
 
-    private void pickFromGallery(){
         ContentValues cv = new ContentValues();
         cv.put(MediaStore.Images.Media.TITLE,"Temp Pick");
         cv.put(MediaStore.Images.Media.DESCRIPTION,"Temp Descr");
@@ -305,7 +300,13 @@ public class AddPostActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT,image_uri);
-        startActivityForResult(intent,IMAGE_PICK_CAMERA_CODE);
+        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
+    }
+
+    private void pickFromGallery(){
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
     }
 
 

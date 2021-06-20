@@ -1,6 +1,7 @@
 package com.edu.gcu.myapplication.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.edu.gcu.myapplication.Models.ModelPost;
 import com.edu.gcu.myapplication.R;
+import com.edu.gcu.myapplication.ThereProfileActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -101,6 +104,14 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
                 Toast.makeText(context,"Question",Toast.LENGTH_SHORT).show();
             }
         });
+        holder.profileLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ThereProfileActivity.class);
+                intent.putExtra("uid",uid);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -115,6 +126,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
         TextView uNameTv,pTimeTv,pTitleTv,pDescriptionTv,pInterestedTv;
         ImageButton moreBtn;
         Button interestedBtn,questionBtn;
+        LinearLayout profileLayout;
         public MyHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -128,6 +140,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
             moreBtn =  itemView.findViewById(R.id.moreBtn);
             interestedBtn =  itemView.findViewById(R.id.interestedBtn);
             questionBtn =  itemView.findViewById(R.id.questionBtn);
+            profileLayout =  itemView.findViewById(R.id.profileLayout);
 
         }
     }

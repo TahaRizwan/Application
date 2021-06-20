@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="350dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="3dp"
     app:cardElevation="3dp"
@@ -13,6 +13,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/profileLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -66,8 +67,9 @@
         android:autoLink="all"/>
     <ImageView
         android:id="@+id/pImageIv"
+        android:scaleType="fitXY"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:background="@color/white"/>
     <TextView
         android:id="@+id/pInterestedTv"

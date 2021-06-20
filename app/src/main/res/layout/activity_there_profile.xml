@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#F1EDED"
-    tools:context=".Fragments.ProfileFragment">
+    tools:context=".ThereProfileActivity">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RelativeLayout
@@ -73,15 +73,6 @@
                 android:layout_height="match_parent"/>
 
         </RelativeLayout>
-    </ScrollView>
+    </RelativeLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="10dp"
-        android:src="@drawable/ic_edit_white"/>
-
-</RelativeLayout>
+</ScrollView>

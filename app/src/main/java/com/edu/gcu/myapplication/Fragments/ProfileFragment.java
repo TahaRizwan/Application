@@ -13,7 +13,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -26,11 +29,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.edu.gcu.myapplication.Adapters.AdapterPosts;
 import com.edu.gcu.myapplication.AddPostActivity;
 import com.edu.gcu.myapplication.LoginActivity;
+import com.edu.gcu.myapplication.Models.ModelPost;
 import com.edu.gcu.myapplication.R;
 import com.edu.gcu.myapplication.databinding.FragmentProfileBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -50,7 +56,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 public class ProfileFragment extends Fragment {
@@ -72,6 +80,7 @@ public class ProfileFragment extends Fragment {
     ImageView coverIv,avatarIv;
     FloatingActionButton fab;
     TextView nameTv,emailTv,phoneTv;
+    RecyclerView postsRecyclerView;
 
     //permission constants
     private  static final int CAMERA_REQUEST_CODE = 100;
@@ -82,6 +91,10 @@ public class ProfileFragment extends Fragment {
     //arrays of permissions to be requested
     String cameraPermissions[];
     String storagePermissions[];
+
+    List<ModelPost> postList;
+    AdapterPosts adapterPosts;
+    String uid;
 
     //uri of picked Image
 
@@ -113,6 +126,7 @@ public class ProfileFragment extends Fragment {
         phoneTv = view.findViewById(R.id.phoneTv);
         emailTv = view.findViewById(R.id.emailTv);
         fab = view.findViewById(R.id.fab);
+        postsRecyclerView = view.findViewById(R.id.recyclerview_posts);
 
         pd = new ProgressDialog(getActivity());
 
@@ -160,11 +174,99 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showEditProfileDialog();
-            }
-        });
+            }});
+
+
+        postList = new ArrayList<>();
+
+        checkUserStatus();
+        loadMyPosts();
         return  view;
 
     }
+
+    private void loadMyPosts() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        //show newest Posts First,for this load from last
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+
+        postsRecyclerView.setLayoutManager(layoutManager);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Jobs");
+
+        //query to load
+        Query query = databaseReference.orderByChild("uid").equalTo(uid);
+        //get all data from this reference
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postList.clear();
+                for(DataSnapshot ds:snapshot.getChildren()){
+                    ModelPost myPosts = ds.getValue(ModelPost.class);
+
+                    //add to list
+                    postList.add(myPosts);
+
+                    //adapter
+                    adapterPosts = new AdapterPosts(getActivity(),postList);
+
+                    //set this adapter to recyclerview
+                    postsRecyclerView.setAdapter(adapterPosts);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(),""+error.getMessage(),Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private void searchMyPosts(String searchQuery) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        //show newest Posts First,for this load from last
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+
+        postsRecyclerView.setLayoutManager(layoutManager);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Jobs");
+
+        //query to load
+        Query query = databaseReference.orderByChild("uid").equalTo(uid);
+        //get all data from this reference
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postList.clear();
+                for(DataSnapshot ds:snapshot.getChildren()){
+                    ModelPost myPosts = ds.getValue(ModelPost.class);
+
+                    if(myPosts.getpTitle().toLowerCase().contains(searchQuery.toLowerCase())||
+                            myPosts.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
+                        //add to list
+                        postList.add(myPosts);
+                    }
+                    //adapter
+                    adapterPosts = new AdapterPosts(getActivity(),postList);
+
+                    //set this adapter to recyclerview
+                    postsRecyclerView.setAdapter(adapterPosts);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(),""+error.getMessage(),Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
     private  boolean checkStoragePermission(){
         //check for permission
         boolean result = ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -285,6 +387,27 @@ public class ProfileFragment extends Fragment {
                             Toast.makeText(getActivity(),""+e.getMessage(),Toast.LENGTH_SHORT).show();
                         }
                     });
+
+                    //if user edit his name,Also change it fom his posts
+
+                    if(key.equals("name")){
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Jobs");
+                        Query query  =databaseReference.orderByChild("uid").equalTo(uid);
+                        query.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot ds:snapshot.getChildren()){
+                                    String child = ds.getKey();
+                                    snapshot.getRef().child(child).child("uName").setValue(value);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
 
 
                 }
@@ -438,6 +561,28 @@ public class ProfileFragment extends Fragment {
                                 }
                             });
 
+
+                            //if user edit his name,Also change it fom his posts
+
+                            if(profileOrCoverPhoto.equals("name")){
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Jobs");
+                                Query query  =databaseReference.orderByChild("uid").equalTo(uid);
+                                query.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for(DataSnapshot ds:snapshot.getChildren()){
+                                            String child = ds.getKey();
+                                            snapshot.getRef().child(child).child("uDp").setValue(downloadUri.toString());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+
                     }
                         else {
                             pd.dismiss();
@@ -486,6 +631,7 @@ public class ProfileFragment extends Fragment {
         FirebaseUser firebaseUser =firebaseAuth.getCurrentUser();
 
         if(firebaseUser != null){
+            uid=firebaseUser.getUid();
 
         }
         else{
@@ -499,6 +645,35 @@ public class ProfileFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 
         inflater.inflate(R.menu.menu_main,menu);
+
+        MenuItem item = menu.findItem(R.id.action_search);
+        //searchview of search user specific posts
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                if(!TextUtils.isEmpty(s)){
+                    searchMyPosts(s);
+                }else{
+                    loadMyPosts();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if(!TextUtils.isEmpty(s)){
+                    searchMyPosts(s);
+                }
+                else{
+                    loadMyPosts();
+                }
+
+                return false;
+            }
+        });
+
         super.onCreateOptionsMenu(menu,inflater);
 
     }
