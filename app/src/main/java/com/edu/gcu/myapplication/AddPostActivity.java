@@ -15,6 +15,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -41,13 +43,18 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 
 public class AddPostActivity extends AppCompatActivity {
 
+    //permission constants
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
+
+    //image pick constant
     private static final int IMAGE_PICK_CAMERA_CODE = 300;
     private static final int IMAGE_PICK_GALLERY_CODE = 400;
 
@@ -68,6 +75,10 @@ public class AddPostActivity extends AppCompatActivity {
     //user info
     String name , email, uid,dp;
 
+    //info of post to be edited
+    String editTitle, editDescription, editImage;
+
+    //image picked will be saved in the uri
     Uri image_uri = null;
 
     //Progress Dialod
@@ -91,6 +102,34 @@ public class AddPostActivity extends AppCompatActivity {
 
         firebaseAuth=FirebaseAuth.getInstance();
         checkUserStatus();
+
+
+        //init views
+        titleEt= findViewById(R.id.pTitleEt);
+        imageIv = findViewById(R.id.pImageIv);
+        uploadBtn = findViewById(R.id.pUploadBtn);
+        descriptionEt = findViewById(R.id.pDescriptionEt);
+
+
+        //get Data through Intent from Previous activities Adapter
+        Intent intent = getIntent();
+        String isUpdateKey = ""+intent.getStringExtra("key");
+        String editPostId = ""+intent.getStringExtra("editPostId");
+
+        //Validate if we came here to update post i.e Came from AdapterPost
+        if(isUpdateKey.equals("editPost")){
+            //update
+            actionBar.setTitle("Update Job");
+            uploadBtn.setText("Update");
+            loadPostData(editPostId);
+        }
+        else{
+            //add
+            actionBar.setTitle("Add New Job");
+            uploadBtn.setText("Upload");
+        }
+
+
         actionBar.setSubtitle(uid);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -111,11 +150,6 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
-        //init views
-        titleEt= findViewById(R.id.pTitleEt);
-        imageIv = findViewById(R.id.pImageIv);
-        uploadBtn = findViewById(R.id.pUploadBtn);
-        descriptionEt = findViewById(R.id.pDescriptionEt);
 
 
 
@@ -140,13 +174,12 @@ public class AddPostActivity extends AppCompatActivity {
                     Toast.makeText(AddPostActivity.this,"Enter Description....",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(image_uri == null){
-                    //post without image
-                    uploadData(title,description,"noImage");
+                if(isUpdateKey.equals("editPost")){
+                    beginUpdate(title,description,editPostId);
                 }
                 else{
-                    //post with image
-                    uploadData(title,description,String.valueOf(image_uri));
+
+                    uploadData(title,description);
                 }
             }
         });
@@ -154,7 +187,231 @@ public class AddPostActivity extends AppCompatActivity {
 
     }
 
-    private void uploadData(String title, String description, String uri) {
+    private void beginUpdate(String title, String description, String editPostId) {
+        pd.setMessage("Updating Job....");
+        pd.show();
+
+        if(!editImage.equals("noImage")){
+            //with Image
+            updateWasWithImage(title,description,editPostId);
+
+            }
+            else if (imageIv.getDrawable() != null){
+                //with image
+            updateWithNowImage(title,description,editPostId);
+            }
+            else{
+                //without image
+            updateWithoutImage(title,description,editPostId);
+        }
+
+        }
+
+    private void updateWithoutImage(String title, String description, String editPostId) {
+        HashMap<String,Object> hashMap = new HashMap<>();
+        //put post info
+        hashMap.put("uid",uid);
+        hashMap.put("uName",name);
+        hashMap.put("uEmail",email);
+        hashMap.put("uDp",dp);
+        hashMap.put("pTitle",title);
+        hashMap.put("pDescr",description);
+        hashMap.put("pImage","noImage");
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Jobs");
+        reference.child(editPostId)
+                .updateChildren(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        pd.dismiss();
+                        Toast.makeText(AddPostActivity.this,"Updated....",Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
+                Toast.makeText(AddPostActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void updateWasWithImage(String title, String description, String editPostId) {
+    //post is with image,so first of All delete Pevious Image First
+        StorageReference mPictureRef = FirebaseStorage.getInstance().getReferenceFromUrl(editImage);
+        mPictureRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //image deleted,upload new Image
+                //for post Image name,post-id,publish-time
+                String timeStamp = String.valueOf(System.currentTimeMillis());
+                String filePathAndName = "Jobs/"+"job_"+timeStamp;
+
+                //get Image from ImageView
+                Bitmap bitmap = ((BitmapDrawable)imageIv.getDrawable()).getBitmap();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                //image compress
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
+                byte[] data = baos.toByteArray();
+
+                StorageReference ref = FirebaseStorage.getInstance().getReference().child(filePathAndName);
+                ref.putBytes(data)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                //image uploaded get its url
+                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while(!uriTask.isSuccessful());
+
+                                String downloadUri = uriTask.getResult().toString();
+                                if(uriTask.isSuccessful()){
+                                    //uri is received,upload to firebase database
+                                    HashMap<String,Object> hashMap = new HashMap<>();
+                                    //put post info
+                                    hashMap.put("uid",uid);
+                                    hashMap.put("uName",name);
+                                    hashMap.put("uEmail",email);
+                                    hashMap.put("uDp",dp);
+                                    hashMap.put("pTitle",title);
+                                    hashMap.put("pDescr",description);
+                                    hashMap.put("pImage",downloadUri);
+
+                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Jobs");
+                                    reference.child(editPostId)
+                                            .updateChildren(hashMap)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    pd.dismiss();
+                                                    Toast.makeText(AddPostActivity.this,"Updated....",Toast.LENGTH_SHORT).show();
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            pd.dismiss();
+                                            Toast.makeText(AddPostActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //image not uploaded
+                        pd.dismiss();
+                        Toast.makeText(AddPostActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
+              Toast.makeText(AddPostActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateWithNowImage(String title, String description, String editPostId) {
+
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String filePathAndName = "Jobs/"+"job_"+timeStamp;
+
+        //get Image from ImageView
+        Bitmap bitmap = ((BitmapDrawable)imageIv.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        //image compress
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
+        byte[] data = baos.toByteArray();
+
+        StorageReference ref = FirebaseStorage.getInstance().getReference().child(filePathAndName);
+        ref.putBytes(data)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        //image uploaded get its url
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while(!uriTask.isSuccessful());
+
+                        String downloadUri = uriTask.getResult().toString();
+                        if(uriTask.isSuccessful()){
+                            //uri is received,upload to firebase database
+                            HashMap<String,Object> hashMap = new HashMap<>();
+                            //put post info
+                            hashMap.put("uid",uid);
+                            hashMap.put("uName",name);
+                            hashMap.put("uEmail",email);
+                            hashMap.put("uDp",dp);
+                            hashMap.put("pTitle",title);
+                            hashMap.put("pDescr",description);
+                            hashMap.put("pImage",downloadUri);
+
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Jobs");
+                            reference.child(editPostId)
+                                    .updateChildren(hashMap)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            pd.dismiss();
+                                            Toast.makeText(AddPostActivity.this,"Updated....",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    pd.dismiss();
+                                    Toast.makeText(AddPostActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //image not uploaded
+                pd.dismiss();
+                Toast.makeText(AddPostActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadPostData(String editPostId) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Jobs");
+        //get detail of post using id of post
+        Query fquery = ref.orderByChild("pId").equalTo(editPostId);
+        fquery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds:snapshot.getChildren()){
+                    //get Data
+                    editTitle = ""+ds.child("pTitle").getValue();
+                    editDescription = ""+ds.child("pDescr").getValue();
+                    editImage = ""+ds.child("pImage").getValue();
+
+                    //set data to view
+                    titleEt.setText(editTitle);
+                    descriptionEt.setText(editDescription);
+
+                    //set Image
+                    if(!editImage.equals("noImage")){
+                        try{
+                            Picasso.get().load(editImage).into(imageIv);
+                        }
+                        catch(Exception e){
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void uploadData(String title, String description) {
         pd.setMessage("Publishing Job....");
         pd.show();
 
@@ -162,10 +419,17 @@ public class AddPostActivity extends AppCompatActivity {
         String timeStamp = String.valueOf(System.currentTimeMillis());
         String filePathAndName = "Posts/"+"Post__" + timeStamp;
 
-        if(!uri.equals("noImage")){
+        if(imageIv.getDrawable()!=null){
+            //get Image from ImageView
+            Bitmap bitmap = ((BitmapDrawable)imageIv.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            //image compress
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,baos);
+            byte[] data = baos.toByteArray();
+
             //post with image
             StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePathAndName);
-            storageReference.putFile(Uri.parse(uri))
+            storageReference.putBytes(data)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -300,7 +564,7 @@ public class AddPostActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT,image_uri);
-        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
+        startActivityForResult(intent,IMAGE_PICK_CAMERA_CODE);
     }
 
     private void pickFromGallery(){
