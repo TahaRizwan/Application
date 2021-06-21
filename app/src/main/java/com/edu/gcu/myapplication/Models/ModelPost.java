@@ -1,12 +1,12 @@
 package com.edu.gcu.myapplication.Models;
 
 public class ModelPost {
-    String pId,pTitle,pDescr,pImage,pTime,uid,uEmail,uDp,uName,pInterested;
+    String pId,pTitle,pDescr,pImage,pTime,uid,uEmail,uDp,uName,pInterested,pQuestions;
     public ModelPost(){
 
     }
 
-    public ModelPost(String pId, String pTitle, String pDescr, String pImage, String pTime, String uid, String uEmail, String uDp, String uName, String pInterested) {
+    public ModelPost(String pId, String pTitle, String pDescr, String pImage, String pTime, String uid, String uEmail, String uDp, String uName, String pInterested, String pQuestions) {
         this.pId = pId;
         this.pTitle = pTitle;
         this.pDescr = pDescr;
@@ -17,6 +17,7 @@ public class ModelPost {
         this.uDp = uDp;
         this.uName = uName;
         this.pInterested = pInterested;
+        this.pQuestions = pQuestions;
     }
 
     public String getpId() {
@@ -97,5 +98,13 @@ public class ModelPost {
 
     public void setpInterested(String pInterested) {
         this.pInterested = pInterested;
+    }
+
+    public String getpQuestions() {
+        return pQuestions;
+    }
+
+    public void setpQuestions(String pQuestions) {
+        this.pQuestions = pQuestions;
     }
 }

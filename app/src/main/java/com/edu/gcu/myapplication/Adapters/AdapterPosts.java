@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.edu.gcu.myapplication.AddPostActivity;
 import com.edu.gcu.myapplication.Models.ModelPost;
+import com.edu.gcu.myapplication.PostDetailActivity;
 import com.edu.gcu.myapplication.R;
 import com.edu.gcu.myapplication.ThereProfileActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -87,6 +88,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
             String pImage = postList.get(i).getpImage();
             String pTimeSamp = postList.get(i).getpTime();
             String pInterested = postList.get(i).getpInterested();//contain number of interested person
+        String pQuestions = postList.get(i).getpQuestions();
 
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         cal.setTimeInMillis(Long.parseLong(pTimeSamp));
@@ -98,6 +100,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
         holder.pTitleTv.setText(pTitle);
         holder.pDescriptionTv.setText(pDescr);
         holder.pInterestedTv.setText(pInterested+" Interested");//e.g 100 Interested
+        holder.pQuestionsTv.setText(pQuestions+" Questions");
 
         setInterested(holder,pId);
 
@@ -170,7 +173,10 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
         holder.questionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"Question",Toast.LENGTH_SHORT).show();
+                //Start Post Detail Activity
+                Intent intent = new Intent(context, PostDetailActivity.class);
+                intent.putExtra("postId",pId);//get detail of the post using this id
+                context.startActivity(intent);
             }
         });
         holder.profileLayout.setOnClickListener(new View.OnClickListener() {
@@ -184,36 +190,36 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
     }
 
     private void setInterested(MyHolder holder,String postKey){
-            interestedRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.child(postKey).hasChild(myUid)){
-                        //user Interested in this job
+        interestedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child(postKey).hasChild(myUid)){
+                    //user Interested in this job
                         /*To indicate that the post is liked by this (SignedIn) user
                         Change Drawable left icon of like button
                         Change text of interested button from "Interested" to "InterestedIn"
                         * */
-                        holder.interestedBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_interested_in,0,0,0);
-                        holder.interestedBtn.setText("InterestedIn");
+                    holder.interestedBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_interested_in,0,0,0);
+                    holder.interestedBtn.setText("InterestedIn");
 
-                    }
-                    else{
-                        //user has not interestedIn this post
+                }
+                else{
+                    //user has not interestedIn this post
                         /*To indicate that the post is liked by this (SignedIn) user
                         Change Drawable left icon of like button
                         Change text of interested button from "InterestedIn" to "Interested"
                         * */
-                        holder.interestedBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_interested,0,0,0);
-                        holder.interestedBtn.setText("Interested");
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                    holder.interestedBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_interested,0,0,0);
+                    holder.interestedBtn.setText("Interested");
 
                 }
-            });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -225,9 +231,8 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
             //Add items in Menu
             popupMenu.getMenu().add(Menu.NONE,0,0,"Delete");
             popupMenu.getMenu().add(Menu.NONE,1,0,"Edit");
-
-
         }
+        popupMenu.getMenu().add(Menu.NONE,2,0,"View Detail");
 
         //Item Clicked listener
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -244,6 +249,11 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
                     Intent intent = new Intent(context, AddPostActivity.class);
                     intent.putExtra("key","editPost");
                     intent.putExtra("editPostId",pId);
+                    context.startActivity(intent);
+                }
+                else if(id==2){
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("postId",pId);//get detail of the post using this id
                     context.startActivity(intent);
                 }
                 return false;
@@ -340,7 +350,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
     class MyHolder extends RecyclerView.ViewHolder{
 
         ImageView uPictureIv,pImageIv;
-        TextView uNameTv,pTimeTv,pTitleTv,pDescriptionTv,pInterestedTv;
+        TextView uNameTv,pTimeTv,pTitleTv,pDescriptionTv,pInterestedTv,pQuestionsTv;
         ImageButton moreBtn;
         Button interestedBtn,questionBtn;
         LinearLayout profileLayout;
@@ -354,6 +364,7 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
             pTitleTv =  itemView.findViewById(R.id.pTitleTv);
             pDescriptionTv =  itemView.findViewById(R.id.pDescriptionTv);
             pInterestedTv =  itemView.findViewById(R.id.pInterestedTv);
+            pQuestionsTv =  itemView.findViewById(R.id.pQuestionsTv);
             moreBtn =  itemView.findViewById(R.id.moreBtn);
             interestedBtn =  itemView.findViewById(R.id.interestedBtn);
             questionBtn =  itemView.findViewById(R.id.questionBtn);

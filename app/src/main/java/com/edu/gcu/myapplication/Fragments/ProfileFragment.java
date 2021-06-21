@@ -350,7 +350,7 @@ public class ProfileFragment extends Fragment {
 
     private void showNamePhoneEmailDialog(String key) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Upate "+key);
+        builder.setTitle("Update "+key);
 
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -399,6 +399,38 @@ public class ProfileFragment extends Fragment {
                                 for(DataSnapshot ds:snapshot.getChildren()){
                                     String child = ds.getKey();
                                     snapshot.getRef().child(child).child("uName").setValue(value);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot ds:snapshot.getChildren()){
+                                    String child = ds.getKey();
+                                    if(snapshot.child(child).hasChild("Questions")){
+                                        String child1 = ""+snapshot.child(child).getKey();
+                                        Query child2 = FirebaseDatabase.getInstance().getReference("Jobs").child(child1).child("Questions").orderByChild("uid").equalTo(uid);
+                                        child2.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for(DataSnapshot ds: snapshot.getChildren()){
+                                                    String child = ds.getKey();
+                                                    snapshot.getRef().child(child).child("uName").setValue(value);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                    }
                                 }
                             }
 
@@ -581,12 +613,45 @@ public class ProfileFragment extends Fragment {
 
                                     }
                                 });
+                                //update user image  in current users comments on posts
+                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot ds:snapshot.getChildren()){
+                                            String child = ds.getKey();
+                                            if(snapshot.child(child).hasChild("Questions")){
+                                                String child1 = ""+snapshot.child(child).getKey();
+                                                Query child2 = FirebaseDatabase.getInstance().getReference("Jobs").child(child1).child("Questions").orderByChild("uid").equalTo(uid);
+                                                child2.addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        for(DataSnapshot ds: snapshot.getChildren()){
+                                                            String child = ds.getKey();
+                                                            snapshot.getRef().child(child).child("uDp").setValue(downloadUri.toString());
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
                             }
 
                     }
                         else {
                             pd.dismiss();
-                            Toast.makeText(getActivity(),"Some Error Occured",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(),"Some Error Occurred",Toast.LENGTH_SHORT).show();
 
                         }
                     }
