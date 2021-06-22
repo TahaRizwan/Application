@@ -1,18 +1,26 @@
 package com.edu.gcu.myapplication.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.edu.gcu.myapplication.Models.ModelQuestion;
 import com.edu.gcu.myapplication.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -21,12 +29,17 @@ import java.util.Locale;
 
 public class AdapterQuestions extends RecyclerView.Adapter<AdapterQuestions.myHolder>{
 
+    boolean mQuestion =false;
+
     Context context;
     List<ModelQuestion> questionList;
+    String myUid,postId;
 
-    public AdapterQuestions(Context context, List<ModelQuestion> questionList) {
+    public AdapterQuestions(Context context, List<ModelQuestion> questionList, String myUid, String postId) {
         this.context = context;
         this.questionList = questionList;
+        this.myUid = myUid;
+        this.postId = postId;
     }
 
     @NonNull
@@ -61,11 +74,65 @@ public class AdapterQuestions extends RecyclerView.Adapter<AdapterQuestions.myHo
             Picasso.get().load(image).placeholder(R.drawable.ic_person_img).into(holder.avatarIv);
         }
         catch (Exception e){
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //check if this comment is by currently signed in user or not
+                    if(myUid.equals(uid)){
+                        //mine comment
+                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getRootView().getContext());
+                        builder.setTitle("Delete");
+                        builder.setMessage("Are you sure to delete this question? ");
+                        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //delete
+                                deleteQuestion(cid);
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //dismiss
+                            }
+                        });
+
+                        builder.create().show();
+                    }
+                    else{
+                        //not mine comment
+                        Toast.makeText(context,"Can't delete other's comment...",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
         }
 
 
 
+    }
+
+    private void deleteQuestion(String cid) {
+        mQuestion=true;
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Jobs").child(postId);
+        ref.child("Questions").child(cid).removeValue();
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(mQuestion) {
+                    String questions = "" + snapshot.child("pQuestions").getValue();
+                    int newQuestionVal = Integer.parseInt(questions) - 1;
+                    ref.child("pQuestions").setValue("" + newQuestionVal);
+                    mQuestion = false;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override

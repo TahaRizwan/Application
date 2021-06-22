@@ -166,7 +166,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
                     questionList.add(modelQuestion);
                     //set up adapter
-                    adapterQuestions = new AdapterQuestions(getApplicationContext(),questionList);
+
+                    //pass myUid and postId as  parameter of constructor of comment Adapter
+
+                    adapterQuestions = new AdapterQuestions(getApplicationContext(),questionList,myUid,postId);
 
                     //set Adapter
                     recyclerView.setAdapter(adapterQuestions);
