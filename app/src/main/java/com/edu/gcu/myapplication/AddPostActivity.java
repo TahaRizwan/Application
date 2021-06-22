@@ -450,6 +450,8 @@ public class AddPostActivity extends AppCompatActivity {
                                 hashMap.put("pDescr",description);
                                 hashMap.put("pImage",downloadUri);
                                 hashMap.put("pTime",timeStamp);
+                                hashMap.put("pInterested","0");
+                                hashMap.put("pQuestions","0");
 
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Jobs");
 
@@ -494,6 +496,9 @@ public class AddPostActivity extends AppCompatActivity {
             hashMap.put("pDescr",description);
             hashMap.put("pImage","noImage");
             hashMap.put("pTime",timeStamp);
+            hashMap.put("pInterested","0");
+            hashMap.put("pQuestions","0");
+
 
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Jobs");
 
