@@ -196,7 +196,7 @@ public class OTPActivity extends AppCompatActivity {
 
                         Toast.makeText(OTPActivity.this,"GET STARTED",Toast.LENGTH_SHORT).show();
 
-                        startActivity(new Intent(OTPActivity.this,MainActivity.class));
+                        startActivity(new Intent(OTPActivity.this,DashboardActivity.class));
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override

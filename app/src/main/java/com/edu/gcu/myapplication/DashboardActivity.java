@@ -26,8 +26,6 @@ import java.util.HashMap;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    ActivityDashboardBinding binding;
-
     ActionBar actionBar;
 
     FirebaseAuth firebaseAuth;
@@ -38,18 +36,17 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityDashboardBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_dashboard);
 
 
         //Actionbar and its type
 
         actionBar = getSupportActionBar();
-        actionBar.setTitle("Looking for Jobs");
+        actionBar.setTitle("Profile");
 
-        JobFragment jobFragment = new JobFragment();
+        ProfileFragment profileFragment = new ProfileFragment();
         FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
-        ft1.replace(R.id.content,jobFragment,"");
+        ft1.replace(R.id.content,profileFragment,"");
         ft1.commit();
 
         //init
@@ -67,21 +64,21 @@ public class DashboardActivity extends AppCompatActivity {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
               switch (item.getItemId()){
-                  case R.id.nav_job:
-                      //home fragment transaction
-
-                      actionBar.setTitle("Looking for Jobs");
-                      JobFragment jobFragment = new JobFragment();
-                      FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
-                      ft1.replace(R.id.content,jobFragment,"");
-                      ft1.commit();
-                      return true;
                   case R.id.nav_profile:
                       //home fragment transaction
+
                       actionBar.setTitle("Profile");
                       ProfileFragment profileFragment = new ProfileFragment();
+                      FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
+                      ft1.replace(R.id.content,profileFragment,"");
+                      ft1.commit();
+                      return true;
+                  case R.id.nav_job:
+                      //home fragment transaction
+                      actionBar.setTitle("Looking for Jobs");
+                      JobFragment jobFragment = new JobFragment();
                       FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
-                      ft2.replace(R.id.content,profileFragment,"");
+                      ft2.replace(R.id.content,jobFragment,"");
                       ft2.commit();
                       return true;
                   case R.id.nav_user:

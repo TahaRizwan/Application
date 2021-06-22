@@ -133,7 +133,7 @@ public class SignUpActivity extends AppCompatActivity {
                 //signup success
 
                 //open Profile Acivity
-                startActivity(new Intent(SignUpActivity.this,MainActivity.class));
+                startActivity(new Intent(SignUpActivity.this,DashboardActivity.class));
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -191,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if(firebaseUser !=null){
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+            startActivity(new Intent(LoginActivity.this,DashboardActivity.class));
             finish();
         }
 
@@ -228,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
                         String email = firebaseUser.getEmail();
                         Toast.makeText(LoginActivity.this,"Logged In"+email,Toast.LENGTH_SHORT).show();
 
-                        startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                        startActivity(new Intent(LoginActivity.this,DashboardActivity.class));
                         finish();
 
                     }
@@ -299,7 +299,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             Toast.makeText(LoginActivity.this,""+firebaseUser.getEmail(),Toast.LENGTH_SHORT).show();
 
-                            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                            startActivity(new Intent(LoginActivity.this,DashboardActivity.class));
                             finish();
                             //updateUI(user);
                         } else {

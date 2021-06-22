@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -24,6 +26,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.edu.gcu.myapplication.Adapters.AdapterQuestions;
+import com.edu.gcu.myapplication.Models.ModelQuestion;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,8 +42,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class PostDetailActivity extends AppCompatActivity {
@@ -60,6 +66,11 @@ public class PostDetailActivity extends AppCompatActivity {
     ImageButton moreBtn;
     Button interestedBtn;
     LinearLayout profileLayout;
+    RecyclerView recyclerView;
+    List<ModelQuestion> questionList;
+
+    AdapterQuestions adapterQuestions;
+
 
     EditText questionEt;
     ImageButton sendBtn;
@@ -96,6 +107,7 @@ public class PostDetailActivity extends AppCompatActivity {
         questionEt = findViewById(R.id.questionEt);
         sendBtn = findViewById(R.id.sendBtn);
         cAvatarIv = findViewById(R.id.cAvatarIv);
+        recyclerView = findViewById(R.id.recyclerView);
 
         loadPostInfo();
 
@@ -104,6 +116,8 @@ public class PostDetailActivity extends AppCompatActivity {
         loadUserInfo();
 
         setInterested();
+
+        loadQuestion();
 
         //set subtitle of actionbar
         actionBar.setSubtitle("Signed as "+myEmail);
@@ -128,6 +142,41 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 interestedPost();
+            }
+        });
+    }
+
+    private void loadQuestion() {
+        //layout(Linear) for recyclerView
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        //set layout to recyclerview
+        recyclerView.setLayoutManager(layoutManager);
+
+        //init question list
+        questionList = new ArrayList<>();
+
+        //path of the post,to get its comment
+         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Jobs").child(postId).child("Questions");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                questionList.clear();
+                for(DataSnapshot ds:snapshot.getChildren()){
+                    ModelQuestion modelQuestion = ds.getValue(ModelQuestion.class);
+
+                    questionList.add(modelQuestion);
+                    //set up adapter
+                    adapterQuestions = new AdapterQuestions(getApplicationContext(),questionList);
+
+                    //set Adapter
+                    recyclerView.setAdapter(adapterQuestions);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
@@ -480,7 +529,7 @@ public class PostDetailActivity extends AppCompatActivity {
             myUid = user.getUid();
         }
         else{
-            startActivity(new Intent(this,MainActivity.class));
+            startActivity(new Intent(this,DashboardActivity.class));
             finish();
         }
     }
