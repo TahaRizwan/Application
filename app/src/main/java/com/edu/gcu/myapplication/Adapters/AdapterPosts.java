@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.edu.gcu.myapplication.AddPostActivity;
 import com.edu.gcu.myapplication.Models.ModelPost;
 import com.edu.gcu.myapplication.PostDetailActivity;
+import com.edu.gcu.myapplication.PostInterestedByActivity;
 import com.edu.gcu.myapplication.R;
 import com.edu.gcu.myapplication.ThereProfileActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -184,6 +185,15 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder>{
             public void onClick(View v) {
                 Intent intent = new Intent(context, ThereProfileActivity.class);
                 intent.putExtra("uid",uid);
+                context.startActivity(intent);
+            }
+        });
+        //Click Like count to start PostInterestedByActivity
+        holder.pInterestedTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PostInterestedByActivity.class);
+                intent.putExtra("postId",pId);
                 context.startActivity(intent);
             }
         });

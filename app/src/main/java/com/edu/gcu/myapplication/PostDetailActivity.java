@@ -144,6 +144,17 @@ public class PostDetailActivity extends AppCompatActivity {
                 interestedPost();
             }
         });
+
+
+        //Click Like count to start PostInterestedByActivity
+        pInterestedTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PostDetailActivity.this, PostInterestedByActivity.class);
+                intent.putExtra("postId",postId);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadQuestion() {
