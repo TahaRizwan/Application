@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,7 +12,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
-import com.edu.gcu.myapplication.databinding.ActivitySignUpBinding;
+import com.edu.gcu.myapplication.databinding.ActivitySignUp2Binding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -24,12 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
-public class SignUpActivity extends AppCompatActivity {
 
-    private ActivitySignUpBinding binding;
+public class SignUpActivity2 extends AppCompatActivity {
+
+    private ActivitySignUp2Binding binding;
 
     private FirebaseAuth firebaseAuth;
 
@@ -44,10 +42,13 @@ public class SignUpActivity extends AppCompatActivity {
     String[] jobArray = {"Carpenter","Mechanic","Electrician","Other"};
 
     private String email = "",password="",age="",name="",phone="",expertise="",area="";
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivitySignUpBinding.inflate(getLayoutInflater());
+        binding = ActivitySignUp2Binding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         //configure ActionBar
@@ -68,76 +69,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         selectedJob = new boolean[jobArray.length];
 
-        binding.expertiseTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Initialize alert Dialog
-                AlertDialog.Builder builder =  new AlertDialog.Builder(SignUpActivity.this);
-                //set title
-                builder.setTitle("Select Your Expertise");
-                //set dialog non cancelable
-                builder.setCancelable(false);
-
-                builder.setMultiChoiceItems(jobArray, selectedJob, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i, boolean b) {
-                        if(b){
-                            //When checkbox Selected
-                            //Add position in job List
-                            jobList.add(i);
-                            Collections.sort(jobList);
-                        }
-                        else{
-                            //When checkbox unselected
-                            //remove from list
-                            jobList.remove(i);
-                        }
-
-                    }
-                });
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //initialize String builder
-                        StringBuilder stringBuilder = new StringBuilder();
-                        //use for loop
-                        for(int j=0;j<jobList.size();j++){
-                            //Concat Array Value
-                            stringBuilder.append(jobArray[jobList.get(j)]);
-                            //check condition
-                            if(j!=jobList.size()-1){
-                                //Add comma
-                                stringBuilder.append(",");
-                            }
-
-                        }
-                        binding.expertiseTv.setText(stringBuilder.toString());
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.setNeutralButton("Clear", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        for (int j=0;j<selectedJob.length;j++){
-                            //remove all selection
-                            selectedJob[j]=false;
-                            //clear job List
-                            jobList.clear();
-
-                            binding.expertiseTv.setText("");
-                        }
-                    }
-                });
-                builder.show();
-            }
-        });
-
-
         binding.signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,6 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public boolean onSupportNavigateUp(){
         onBackPressed();//got at previous activity when back  arrow pressed
@@ -154,7 +86,6 @@ public class SignUpActivity extends AppCompatActivity {
     private void validateData() {
         //get Data
         area = binding.addressEt.getText().toString().trim();
-        expertise = binding.expertiseTv.getText().toString().trim();
         phone = binding.phoneEt.getText().toString().trim();
         name = binding.nameEt.getText().toString().trim();
         age = binding.AgeEt.getText().toString().trim();
@@ -170,11 +101,6 @@ public class SignUpActivity extends AppCompatActivity {
         else if(TextUtils.isEmpty(password)){
             //no password is entered
             binding.passwordEt.setError("Enter Password");
-        }
-
-        else if(TextUtils.isEmpty(expertise)){
-            //no Expertise is entered
-            binding.phoneEt.setError("Enter Expertise");
         }
 
         else if(TextUtils.isEmpty(age)){
@@ -220,7 +146,6 @@ public class SignUpActivity extends AppCompatActivity {
                 hashMap.put("onlineStatus","online");
                 hashMap.put("typingTo","noOne");
                 hashMap.put("age",age);
-                hashMap.put("expertise",expertise);
                 hashMap.put("phone",phone);
                 hashMap.put("image","");//will add later
                 hashMap.put("cover","");//will add later
@@ -236,11 +161,11 @@ public class SignUpActivity extends AppCompatActivity {
                 reference.child(uid).setValue(hashMap);
 
 
-                Toast.makeText(SignUpActivity.this,"Account Created\n"+email,Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity2.this,"Account Created\n"+email,Toast.LENGTH_SHORT).show();
                 //signup success
 
                 //open Profile Activity
-                startActivity(new Intent(SignUpActivity.this,DashboardActivity.class));
+                startActivity(new Intent(SignUpActivity2.this,DashboardActivity.class));
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -248,7 +173,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 //sign up failed
                 progressDialog.dismiss();
-                Toast.makeText(SignUpActivity.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity2.this,""+e.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
 

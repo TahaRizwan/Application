@@ -108,10 +108,24 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        binding.haveAccount.setOnClickListener(new View.OnClickListener() {
+        binding.haveAccountLaborer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
+            }
+        });
+
+        binding.haveAccountHomeOwner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,SignUpActivity2.class));
+            }
+        });
+
+        binding.haveAccountCompany.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,SignUpActivity3.class));
             }
         });
 

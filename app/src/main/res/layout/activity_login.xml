@@ -99,14 +99,36 @@
 
 
     <TextView
-        android:layout_above="@+id/otpVerification"
-        android:id="@+id/haveAccount"
+        android:layout_above="@+id/haveAccountHomeOwner"
+        android:id="@+id/haveAccountLaborer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/already_have_an_account_signup"
+        android:text="@string/sign_up_as_a_laborer"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
+        style="@style/TextAppearance.MaterialComponents.Caption">
+    </TextView>
+    <TextView
+        android:layout_above="@+id/haveAccountCompany"
+        android:id="@+id/haveAccountHomeOwner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up_as_a_homeowner"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp"
+        style="@style/TextAppearance.MaterialComponents.Caption">
+    </TextView>
+    <TextView
+        android:layout_above="@+id/otpVerification"
+        android:id="@+id/haveAccountCompany"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up_as_a_company"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp"
         style="@style/TextAppearance.MaterialComponents.Caption">
     </TextView>
 
