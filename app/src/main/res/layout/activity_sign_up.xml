@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,12 +7,15 @@
     android:padding="20dp"
     android:orientation="vertical"
     tools:context=".SignUpActivity">
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
     <TextView
         android:id="@+id/titleLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SignUp"
+        android:text="@string/signup_as_a_skilled_laborer"
         android:textAlignment="center"
         style="@style/TextAppearance.MaterialComponents.Headline4"/>
 
@@ -20,23 +23,62 @@
         android:id="@+id/descriptionLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create a new account !!!"
+        android:text="@string/create_a_new_account"
         android:textAlignment="center"
-        style="@style/TextAppearance.MaterialComponents.Caption"/>
+        style="@style/TextAppearance.MaterialComponents.Headline5"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageIv"
+            android:layout_width="wrap_content"
+            android:layout_height="178dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/builder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/imageAdderIv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_add_circle_yellow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline3"
+            app:layout_constraintTop_toTopOf="@+id/guideline2"
+            tools:ignore="ContentDescription" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="131dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="138dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <!--Name-->
-    <ImageView
-        android:id="@+id/imageIv"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/builder" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameTitle"
-        android:layout_above="@+id/AgeTitle"
         android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -45,8 +87,53 @@
             android:id="@+id/nameEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Full Name"
+            android:hint="@string/full_name"
             android:inputType="textPersonName">
+
+        </EditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!--Phone-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/phoneTitle"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/phoneEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/phone_number_can_be_empty"
+            android:inputType="number">
+
+        </EditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!--Speciality-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/expertiseTv"
+        android:hint="Select Your Expertise"
+        android:padding="12dp"
+        android:drawablePadding="16dp"
+        android:drawableEnd="@drawable/ic_drop_down_yellow"/>
+
+    <!--Address-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/AddressTitle"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/addressEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/your_working_area"
+            android:inputType="textMultiLine">
 
         </EditText>
     </com.google.android.material.textfield.TextInputLayout>
@@ -54,34 +141,31 @@
     <!--Age-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/AgeTitle"
-        android:layout_above="@+id/emailTitle"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
-        android:layout_centerInParent="true"
         android:layout_height="wrap_content">
         <EditText
             android:id="@+id/AgeEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Age"
+            android:hint="@string/age"
             android:inputType="number">
 
         </EditText>
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <!--Email-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailTitle"
-        android:layout_above="@+id/passwordTitle"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
-        android:layout_centerInParent="true"
         android:layout_height="wrap_content">
         <EditText
             android:id="@+id/emailEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="@string/email"
             android:inputType="textEmailAddress">
 
         </EditText>
@@ -90,10 +174,8 @@
     <!--Password-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordTitle"
-        android:layout_below="@+id/emailTitle"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
-        android:layout_centerInParent="true"
         app:passwordToggleEnabled="true"
         android:layout_height="wrap_content">
         <EditText
@@ -112,10 +194,10 @@
         android:id="@+id/signUpBtn"
         android:layout_width="match_parent"
         android:text="SignUp"
-        android:layout_below="@+id/passwordTitle"
         android:layout_marginTop="10dp"
         android:layout_height="wrap_content"/>
 
 
 
 </LinearLayout>
+</ScrollView>

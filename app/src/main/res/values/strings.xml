@@ -7,4 +7,12 @@
     <string name="forgot_password_recover">Forgot Password? <b>Recover</b></string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_a_new_account">Create a new account !!!</string>
+    <string name="signup_as_a_skilled_laborer">SignUp As A Skilled Laborer</string>
+    <string name="full_name">Full Name</string>
+    <string name="your_expertise_in">Your Expertise in...</string>
+    <string name="your_working_area">Your Working Area...</string>
+    <string name="age">Age</string>
+    <string name="email">Email</string>
+    <string name="phone_number_can_be_empty">Phone Number(can be empty)</string>
 </resources>
