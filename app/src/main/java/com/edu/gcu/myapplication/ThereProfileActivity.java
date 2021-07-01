@@ -39,8 +39,8 @@ public class ThereProfileActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
 
-    ImageView coverIv,avatarIv;
-    TextView nameTv,emailTv,phoneTv;
+    ImageView avatarIv;
+    TextView nameTv,emailTv,phoneTv,ageTv,addressTv,expertiseTv;
 
     List<ModelPost> postList;
     AdapterPosts adapterPosts;
@@ -58,10 +58,12 @@ public class ThereProfileActivity extends AppCompatActivity {
 
         //init views
         avatarIv = findViewById(R.id.avatarIv);
-        coverIv = findViewById(R.id.coverIv);
         nameTv = findViewById(R.id.nameTv);
         phoneTv = findViewById(R.id.phoneTv);
         emailTv = findViewById(R.id.emailTv);
+        ageTv = findViewById(R.id.ageTv);
+        addressTv = findViewById(R.id.addressTv);
+        expertiseTv = findViewById(R.id.expertiseTv);
 
 
         postsRecyclerView = findViewById(R.id.recyclerview_posts);
@@ -83,26 +85,24 @@ public class ThereProfileActivity extends AppCompatActivity {
                     String email = ""+ ds.child("email").getValue();
                     String phone = ""+ ds.child("phone").getValue();
                     String image = ""+ ds.child("image").getValue();
-                    String cover = ""+ ds.child("cover").getValue();
+                    String age = ""+ ds.child("age").getValue();
+                    String area = ""+ ds.child("area").getValue();
+                    String expertise = ""+ ds.child("expertise").getValue();
 
                     //set data
 
                     nameTv.setText(name);
                     emailTv.setText(email);
                     phoneTv.setText(phone);
+                    ageTv.setText(age);
+                    addressTv.setText(area);
+                    expertiseTv.setText(expertise);
 
                     try{
                         Picasso.get().load(image).into(avatarIv);
                     }
                     catch (Exception e){
                         Picasso.get().load(R.drawable.ic_person_white).into(avatarIv);
-                    }
-                    try{
-                        Picasso.get().load(cover).into(coverIv);
-
-                    }
-                    catch (Exception e){
-                        Picasso.get().load(R.drawable.ic_person_white).into(coverIv);
                     }
                 }
             }
