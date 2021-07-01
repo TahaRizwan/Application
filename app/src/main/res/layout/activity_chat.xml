@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F1EDED"
+    android:background="@color/yellow_200"
     tools:context=".ChatActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_primary_dark"
+        android:background="@color/yellow_700"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
         <LinearLayout
@@ -45,7 +45,7 @@
                 android:id="@+id/userStatusTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Online"
+                android:text="Offline"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
         </LinearLayout>

@@ -38,6 +38,7 @@
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/uPicureIv"
                             android:scaleType="centerCrop"
+                            android:background="@color/yellow_500"
                             android:src="@drawable/ic_person_img"
                             android:layout_width="50dp"
                             android:layout_height="50dp"/>
@@ -95,7 +96,7 @@
                     <TextView
                         android:id="@+id/pInterestedTv"
                         android:text="1.2K Interested"
-                        android:textColor="@color/design_default_color_primary"
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"/>
@@ -105,7 +106,7 @@
                         android:layout_weight="1"
                         android:textAlignment="textEnd"
                         android:gravity="end"
-                        android:textColor="@color/design_default_color_primary"
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                     </LinearLayout>
@@ -161,6 +162,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/cAvatarIv"
+        android:background="@color/yellow_500"
         android:src="@drawable/ic_person_img"/>
 
     <EditText

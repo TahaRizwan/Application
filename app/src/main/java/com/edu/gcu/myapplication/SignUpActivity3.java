@@ -135,14 +135,14 @@ public class SignUpActivity3 extends AppCompatActivity {
 
                 //put info in hashMap
                 hashMap.put("email",email);
+                hashMap.put("area",area);
                 hashMap.put("uid",uid);
                 hashMap.put("name",name);
-                hashMap.put("onlineStatus","online");
+                hashMap.put("onlineStatus","offline");
                 hashMap.put("typingTo","noOne");
                 hashMap.put("age",age);
                 hashMap.put("phone",phone);
                 hashMap.put("image","");//will add later
-                hashMap.put("cover","");//will add later
 
                 //firebase database instance
 

@@ -80,10 +80,9 @@ public class ProfileFragment extends Fragment {
     //path where images of profile and cover will be  stored
     String storagePath = "Users_Profile_Cover_Imgs/";
 
-
-    ImageView coverIv,avatarIv;
+    ImageView avatarIv;
     FloatingActionButton fab;
-    TextView nameTv,emailTv,phoneTv,ageTv;
+    TextView nameTv,emailTv,phoneTv,ageTv,expertiseTv,addressTv;
     RecyclerView postsRecyclerView;
 
     //permission constants
@@ -103,7 +102,7 @@ public class ProfileFragment extends Fragment {
     //uri of picked Image
 
     Uri image_uri;
-    String profileOrCoverPhoto;
+    String profilePhoto;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -125,10 +124,11 @@ public class ProfileFragment extends Fragment {
 
         //init views
         avatarIv = view.findViewById(R.id.avatarIv);
-        coverIv = view.findViewById(R.id.coverIv);
         nameTv = view.findViewById(R.id.nameTv);
         phoneTv = view.findViewById(R.id.phoneTv);
         emailTv = view.findViewById(R.id.emailTv);
+        expertiseTv = view.findViewById(R.id.expertiseTv);
+        addressTv = view.findViewById(R.id.addressTv);
         ageTv = view.findViewById(R.id.ageTv);
         fab = view.findViewById(R.id.fab);
         postsRecyclerView = view.findViewById(R.id.recyclerview_posts);
@@ -146,7 +146,9 @@ public class ProfileFragment extends Fragment {
                     String age = ""+ds.child("age").getValue();
                     String phone = ""+ ds.child("phone").getValue();
                     String image = ""+ ds.child("image").getValue();
-                    String cover = ""+ ds.child("cover").getValue();
+                    String expertise = ""+ ds.child("expertise").getValue();
+                    String area = ""+ds.child("area").getValue();
+
 
                     //set data
 
@@ -154,21 +156,17 @@ public class ProfileFragment extends Fragment {
                     ageTv.setText(age);
                     emailTv.setText(email);
                     phoneTv.setText(phone);
+                    addressTv.setText(area);
+                    expertiseTv.setText(expertise);
 
                     try{
 
                         Picasso.get().load(image).into(avatarIv);
                     }
                     catch (Exception e){
-                        Picasso.get().load(R.drawable.ic_person_white).into(avatarIv);
+                        Picasso.get().load(R.drawable.builder).into(avatarIv);
                     }
-                    try{
-                        Picasso.get().load(cover).into(coverIv);
 
-                    }
-                    catch (Exception e){
-                        Picasso.get().load(R.drawable.ic_person_white).into(coverIv);
-                    }
                 }
             }
 
@@ -299,16 +297,17 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showEditProfileDialog() {
-        /*Show Dialog conaining Options
+        /*Show Dialog containing Options
         1) Edit Profile Picture
-        2) Edit  Cover Picture
-        3) Edit Name
-        4) Edit Phone
-        5) Edit Email
-        6) Change Password
+        2) Edit Name
+        3) Edit Phone
+        4) Edit Email
+        5) Edit Area
+        6) Edit Age
+        7) Change Password
         * */
 
-        String options[]={"Edit Profile Picture","Edit  Cover Picture","Edit Name","Edit Phone","Edit Email","Change Password"};
+        String options[]={"Edit Profile Picture","Edit Name","Edit Phone","Edit Email","Edit Area","Edit Age","Change Password"};
 
         //alert dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -324,32 +323,38 @@ public class ProfileFragment extends Fragment {
                 if(which == 0){
                     //edit Profile clicked
                     pd.setMessage("Updating Profile Picture");
-                    profileOrCoverPhoto = "image";
+                    profilePhoto = "image";
                     showImagePicDialog();
                 }
                 else if(which==1){
-                    //edit Cover clicked
-                    pd.setMessage("Updating Cover Picture");
-                    profileOrCoverPhoto = "cover";
-                    showImagePicDialog();
-                }
-                else if(which==2){
                     //edit Name clicked
                     pd.setMessage("Updating Name");
 
                     showNamePhoneEmailDialog("name");
                 }
-                else if(which==3){
+                else if(which==2){
                     //edit Phone clicked
                     pd.setMessage("Updating Phone");
 
                     showNamePhoneEmailDialog("phone");
                 }
-                else if(which==4){
+                else if(which==3){
                     //edit Email clicked
                     pd.setMessage("Updating Email");
 
                     showNamePhoneEmailDialog("email");
+                }
+                else if(which==4){
+                    //edit Area clicked
+                    pd.setMessage("Updating Area");
+
+                    showAreaAgeDialog("area");
+                }
+                else if(which==5){
+                    //edit Age clicked
+                    pd.setMessage("Updating Age");
+
+                    showAreaAgeDialog("age");
                 }
                 else if(which==5){
                     //edit Email clicked
@@ -363,6 +368,59 @@ public class ProfileFragment extends Fragment {
 
         builder.create().show();
     }
+
+    private void showAreaAgeDialog(String key) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Update "+key);
+
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setPadding(10,10,10,10);
+
+        EditText editText = new EditText(getActivity());
+        editText.setHint("Enter "+key);
+        linearLayout.addView(editText);
+
+        builder.setView(linearLayout);
+
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String value = editText.getText().toString().trim();
+
+                if(!TextUtils.isEmpty(value)){
+                    pd.show();
+                    HashMap<String,Object> result = new HashMap<>();
+
+                    result.put(key,value);
+
+                    databaseReference.child(firebaseUser.getUid()).updateChildren(result)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    pd.dismiss();
+                                    Toast.makeText(getActivity(),"Updated...",Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd.dismiss();
+                            Toast.makeText(getActivity(),""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.create().show();
+            }
 
     private void showChangePasswordDialog() {
 
@@ -474,7 +532,7 @@ public class ProfileFragment extends Fragment {
 
                     //if user edit his name,Also change it fom his posts
 
-                    if(key.equals("name")){
+                    if(key.equals("name")) {
                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Jobs");
                         Query query  =databaseReference.orderByChild("uid").equalTo(uid);
                         query.addValueEventListener(new ValueEventListener() {
@@ -633,20 +691,20 @@ public class ProfileFragment extends Fragment {
             if(requestCode == IMAGE_PICK_GALLERY_CODE){
                 //image picked from gallery,get uri of image
                 image_uri = data.getData();
-                uploadProfileCoverPhoto(image_uri);
+                uploadProfilePhoto(image_uri);
             }
             if(requestCode==IMAGE_PICK_CAMERA_CODE){
                 //image picked from camera,get uri of image
-                uploadProfileCoverPhoto(image_uri);
+                uploadProfilePhoto(image_uri);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void uploadProfileCoverPhoto(Uri uri) {
+    private void uploadProfilePhoto(Uri uri) {
         pd.show();
         //path and name of image to be stored in firebase storage
-        String filePathAndName = storagePath+""+profileOrCoverPhoto+"_"+firebaseUser.getUid();
+        String filePathAndName = storagePath+""+profilePhoto+"_"+firebaseUser.getUid();
         StorageReference storageReference2nd = storageReference.child(filePathAndName);
         storageReference2nd.putFile(uri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -659,7 +717,7 @@ public class ProfileFragment extends Fragment {
                         //Check if image is uploaded or not uri
                         if(uriTask.isSuccessful()){
                             HashMap<String,Object> results = new HashMap<>();
-                            results.put(profileOrCoverPhoto,downloadUri.toString());
+                            results.put(profilePhoto,downloadUri.toString());
 
                             databaseReference.child(firebaseUser.getUid()).updateChildren(results)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -680,7 +738,7 @@ public class ProfileFragment extends Fragment {
 
                             //if user edit his name,Also change it fom his posts
 
-                            if(profileOrCoverPhoto.equals("name")){
+                            if(profilePhoto.equals("name")){
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Jobs");
                                 Query query  =databaseReference.orderByChild("uid").equalTo(uid);
                                 query.addValueEventListener(new ValueEventListener() {
