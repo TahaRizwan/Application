@@ -83,7 +83,7 @@ public class ProfileFragment extends Fragment {
 
     ImageView coverIv,avatarIv;
     FloatingActionButton fab;
-    TextView nameTv,emailTv,phoneTv;
+    TextView nameTv,emailTv,phoneTv,ageTv;
     RecyclerView postsRecyclerView;
 
     //permission constants
@@ -129,6 +129,7 @@ public class ProfileFragment extends Fragment {
         nameTv = view.findViewById(R.id.nameTv);
         phoneTv = view.findViewById(R.id.phoneTv);
         emailTv = view.findViewById(R.id.emailTv);
+        ageTv = view.findViewById(R.id.ageTv);
         fab = view.findViewById(R.id.fab);
         postsRecyclerView = view.findViewById(R.id.recyclerview_posts);
 
@@ -142,6 +143,7 @@ public class ProfileFragment extends Fragment {
                 for(DataSnapshot ds:snapshot.getChildren()){
                     String name = ""+ ds.child("name").getValue();
                     String email = ""+ ds.child("email").getValue();
+                    String age = ""+ds.child("age").getValue();
                     String phone = ""+ ds.child("phone").getValue();
                     String image = ""+ ds.child("image").getValue();
                     String cover = ""+ ds.child("cover").getValue();
@@ -149,10 +151,12 @@ public class ProfileFragment extends Fragment {
                     //set data
 
                     nameTv.setText(name);
+                    ageTv.setText(age);
                     emailTv.setText(email);
                     phoneTv.setText(phone);
 
                     try{
+
                         Picasso.get().load(image).into(avatarIv);
                     }
                     catch (Exception e){

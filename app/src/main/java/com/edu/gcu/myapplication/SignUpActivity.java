@@ -36,7 +36,7 @@ public class SignUpActivity extends AppCompatActivity {
     //actionbar
     private ActionBar actionBar;
 
-    private String email = "",password="";
+    private String email = "",password="",age="",name="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +75,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void validateData() {
         //get Data
+        name = binding.nameEt.getText().toString().trim();
+        age = binding.AgeEt.getText().toString().trim();
         email = binding.emailEt.getText().toString().trim();
         password = binding.passwordEt.getText().toString().trim();
 
@@ -87,8 +89,24 @@ public class SignUpActivity extends AppCompatActivity {
             //no password is entered
             binding.passwordEt.setError("Enter Password");
         }
+
+        else if(TextUtils.isEmpty(age)){
+            //no age is entered
+            binding.passwordEt.setError("Enter Age");
+        }
+
+        else if(TextUtils.isEmpty(name)){
+            //no name is entered
+            binding.passwordEt.setError("Enter Name");
+        }
+
+        else if(TextUtils.isEmpty(email)){
+            //no email is entered
+            binding.passwordEt.setError("Enter Email");
+        }
+
         else if(password.length()<6){
-            binding.emailEt.setError("Password must be atleast 6 character long");
+            binding.emailEt.setError("Password must be at least 6 character long");
         }
         else{
             firebaseSignUp();
@@ -111,9 +129,10 @@ public class SignUpActivity extends AppCompatActivity {
                 //put info in hashMap
                 hashMap.put("email",email);
                 hashMap.put("uid",uid);
-                hashMap.put("name","");//will add later
+                hashMap.put("name",name);//will add later
                 hashMap.put("onlineStatus","online");
                 hashMap.put("typingTo","noOne");
+                hashMap.put("age",age);
                 hashMap.put("phone","");//will add later
                 hashMap.put("image","");//will add later
                 hashMap.put("cover","");//will add later
@@ -129,7 +148,7 @@ public class SignUpActivity extends AppCompatActivity {
                 reference.child(uid).setValue(hashMap);
 
 
-                Toast.makeText(SignUpActivity.this,"Acount Created\n"+email,Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this,"Account Created\n"+email,Toast.LENGTH_SHORT).show();
                 //signup success
 
                 //open Profile Acivity

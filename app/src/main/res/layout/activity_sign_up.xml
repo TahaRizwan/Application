@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
+    android:orientation="vertical"
     tools:context=".SignUpActivity">
 
     <TextView
@@ -19,28 +20,63 @@
         android:id="@+id/descriptionLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/titleLabel"
         android:text="Create a new account !!!"
         android:textAlignment="center"
         style="@style/TextAppearance.MaterialComponents.Caption"/>
 
-    <ImageView
-        android:layout_below="@+id/descriptionLabel"
-        android:layout_width="250dp"
-        android:layout_height="180dp"
-        android:src="@drawable/builder"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp" />
 
+    <!--Name-->
+    <ImageView
+        android:id="@+id/imageIv"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/builder" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameTitle"
+        android:layout_above="@+id/AgeTitle"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/nameEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Full Name"
+            android:inputType="textPersonName">
+
+        </EditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--Age-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/AgeTitle"
+        android:layout_above="@+id/emailTitle"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/AgeEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Age"
+            android:inputType="number">
+
+        </EditText>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!--Email-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailTitle"
         android:layout_above="@+id/passwordTitle"
-        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_centerInParent="true"
         android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/emailEt"
             android:layout_width="match_parent"
@@ -54,12 +90,12 @@
     <!--Password-->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordTitle"
+        android:layout_below="@+id/emailTitle"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
         android:layout_centerInParent="true"
         app:passwordToggleEnabled="true"
         android:layout_height="wrap_content">
-
         <EditText
             android:id="@+id/passwordEt"
             android:layout_width="match_parent"
@@ -82,4 +118,4 @@
 
 
 
-</RelativeLayout>
+</LinearLayout>
